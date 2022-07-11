@@ -1,6 +1,9 @@
 #pragma once
 
 #include <attn/attn_config.hpp>
+#include <common/interfaces.hpp>
+
+#include <memory>
 
 namespace attn
 {
@@ -15,6 +18,6 @@ namespace attn
  *
  * @return 0 == success
  */
-int attnDaemon(Config* i_config);
+int attnDaemon(Config* i_config, Interfaces& i_interfaces);
 
 } // namespace attn

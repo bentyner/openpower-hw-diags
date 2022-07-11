@@ -105,3 +105,5 @@ foreach tc : testcases
 
 endforeach
 
+# mock environment testing and development
+subdir('mock')

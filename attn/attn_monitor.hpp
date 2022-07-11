@@ -5,6 +5,9 @@
 #include <attn/attn_config.hpp>
 #include <boost/asio/io_service.hpp>
 #include <boost/asio/posix/stream_descriptor.hpp>
+#include <common/interfaces.hpp>
+
+#include <memory>
 
 namespace attn
 {
@@ -29,10 +32,11 @@ class AttnMonitor
      * @param i_attnConfig poiner to attention handler configuration object
      */
     AttnMonitor(gpiod_line* line, gpiod_line_request_config& config,
-                boost::asio::io_service& io, Config* i_attnConfig) :
+                boost::asio::io_service& io, Config* i_attnConfig,
+                Interfaces& i_interfaces) :
         iv_gpioLine(line),
         iv_gpioConfig(config), iv_gpioEventDescriptor(io),
-        iv_config(i_attnConfig)
+        iv_config(i_attnConfig), iv_interfaces(i_interfaces)
     {
         requestGPIOEvent(); // registers the event handler
     }
@@ -61,6 +65,9 @@ class AttnMonitor
 
     /** @brief attention handler configuration object pointer */
     Config* iv_config;
+
+    /** @brief interfaces for common functions */
+    Interfaces& iv_interfaces;
 
   private: // class methods
     /** @brief schedule a gpio event handler */

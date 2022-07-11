@@ -8,7 +8,12 @@
 #include <attn/attn_main.hpp>
 #include <buildinfo.hpp>
 #include <cli.hpp>
+#include <common/hardware.hpp>
+#include <common/interfaces.hpp>
+#include <common/utils.hpp>
 #include <util/pdbg_callback.hpp>
+
+#include <memory>
 
 /**
  * @brief Attention handler application main()
@@ -71,9 +76,19 @@ int main(int argc, char* argv[])
                 // convert remaining cmd line args to config values
                 parseConfig(argv, argv + argc, &attnConfig);
 
-                attn::attnHandler(&attnConfig); // handle pending attentions
+                // create interfaces
+                // HardwareSource hardwareService = Hardware();
+                // UtilSource utilService         = Utils();
+                Hardware hardwareService = Hardware();
+                Utils utilService        = Utils();
+                Interfaces interfaces =
+                    Interfaces(hardwareService, utilService);
 
-                attn::attnDaemon(&attnConfig); // start daemon
+                // handle pending attentions
+                attn::attnHandler(&attnConfig, interfaces);
+
+                // start daemon
+                attn::attnDaemon(&attnConfig, interfaces);
             }
         }
     }

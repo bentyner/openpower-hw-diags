@@ -1,6 +1,7 @@
 #pragma once
 
 #include <attn/attn_config.hpp>
+#include <common/interfaces.hpp>
 
 namespace attn
 {
@@ -31,6 +32,6 @@ constexpr uint32_t RECOVERABLE_ATTN = 0x10000000;
  *
  * @param i_config pointer to attention handler configuration object
  */
-void attnHandler(Config* i_config);
+void attnHandler(Config* i_config, Interfaces& i_interfaces);
 
 } // namespace attn

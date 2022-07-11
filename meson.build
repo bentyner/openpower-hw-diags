@@ -120,7 +120,8 @@ no_listener_mode = get_option('nlmode')
 
 if not no_listener_mode.disabled()
   executable('openpower-hw-diags',
-              sources : [ 'main_nl.cpp', 'cli.cpp', buildinfo, plugins_src ],
+              sources : [ 'main_nl.cpp', 'cli.cpp',
+              buildinfo, plugins_src ],
               dependencies : [ libhei_dep ],
               link_with : hwdiags_libs,
               install : true)

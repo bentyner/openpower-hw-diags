@@ -4,8 +4,12 @@
 #include <attn/attn_config.hpp>
 #include <attn/attn_handler.hpp>
 #include <cli.hpp>
+#include <common/interfaces.hpp>
+#include <test/end2end/interfaces/hardware.hpp>
+#include <test/end2end/interfaces/utils.hpp>
 #include <util/trace.hpp>
 
+#include <memory>
 #include <vector>
 
 namespace attn
@@ -30,8 +34,13 @@ int main(int argc, char* argv[])
     // convert cmd line args to config values
     parseConfig(argv, argv + argc, &attnConfig);
 
+    // create interfaces
+    Hardware hardwareService = Hardware();
+    Utils utilService        = Utils();
+    Interfaces interfaces    = Interfaces(hardwareService, utilService);
+
     // exercise attention gpio event path
-    attn::attnHandler(&attnConfig);
+    attn::attnHandler(&attnConfig, interfaces);
 
     // Get first enabled proc for testing
     pdbg_target* target = nullptr;

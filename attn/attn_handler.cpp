@@ -3,8 +3,9 @@ extern "C"
 #include <libpdbg.h>
 #include <libpdbg_sbe.h>
 }
-
 #include <config.h>
+
+#include <memory>
 
 #ifdef CONFIG_PHAL_API
 #include <libphal.H>
@@ -20,6 +21,7 @@ extern "C"
 #include <attn/bp_handler.hpp>
 #include <attn/ti_handler.hpp>
 #include <attn/vital_handler.hpp>
+#include <common/interfaces.hpp>
 #include <util/dbus.hpp>
 #include <util/ffdc_file.hpp>
 #include <util/pdbg.hpp>
@@ -76,7 +78,7 @@ void clearAttnInterrupts();
  *
  * @param i_breakpoints true = breakpoint special attn handling enabled
  */
-void attnHandler(Config* i_config)
+void attnHandler(Config* i_config, Interfaces& i_interfaces)
 {
     // Check if enClrAttnIntr is enabled
     if (true == i_config->getFlag(enClrAttnIntr))
@@ -132,7 +134,9 @@ void attnHandler(Config* i_config)
                 isr_val = 0xffffffff; // invalid isr value
 
                 // get active attentions on processor
-                if (RC_SUCCESS != fsi_read(fsiTarget, 0x1007, &isr_val))
+                if (RC_SUCCESS !=
+                    i_interfaces.hardware.getCfam(fsiTarget, 0x1007, isr_val))
+                // if (RC_SUCCESS != fsi_read(fsiTarget, 0x1007, &isr_val))
                 {
                     // log cfam read error
                     trace::err("cfam read 0x1007 FAILED");
@@ -152,7 +156,9 @@ void attnHandler(Config* i_config)
                     isr_mask = 0xffffffff; // invalid isr mask
 
                     // get interrupt enabled special attentions mask
-                    if (RC_SUCCESS != fsi_read(fsiTarget, 0x100d, &isr_mask))
+                    // if (RC_SUCCESS != fsi_read(fsiTarget, 0x100d, &isr_mask))
+                    if (RC_SUCCESS != i_interfaces.hardware.getCfam(
+                                          fsiTarget, 0x100d, isr_val))
                     {
                         // log cfam read error
                         trace::err("cfam read 0x100d FAILED");

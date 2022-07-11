@@ -1,4 +1,5 @@
 #include <attn/attn_monitor.hpp>
+#include <common/interfaces.hpp>
 
 namespace attn
 {
@@ -6,7 +7,7 @@ namespace attn
 /**
  * @brief Attention handler application main()
  */
-int attnDaemon(Config* i_config)
+int attnDaemon(Config* i_config, Interfaces& i_interfaces)
 {
     int rc = 0; // assume success
 
@@ -31,8 +32,8 @@ int attnDaemon(Config* i_config)
     {
         // Creating a vector of one gpio to monitor
         std::vector<std::unique_ptr<attn::AttnMonitor>> gpios;
-        gpios.push_back(
-            std::make_unique<attn::AttnMonitor>(line, config, io, i_config));
+        gpios.push_back(std::make_unique<attn::AttnMonitor>(
+            line, config, io, i_config, i_interfaces));
 
         io.run(); // start GPIO monitor
 
