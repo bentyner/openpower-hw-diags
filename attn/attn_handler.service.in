@@ -7,12 +7,12 @@ After=fsi-scan@0.service
 After=op-cfam-reset.service
 After=cfam_override@0.service
 After=openpower-update-bios-attr-table.service
-Conflicts=obmc-host-stop@0.target
 Conflicts=obmc-host-timeout@0.target
 
 [Service]
 @ENABLE_PHAL_TRUE@Environment="PDBG_DTB=/var/lib/phosphor-software-manager/hostfw/running/DEVTREE"
-ExecStart=/usr/bin/openpower-hw-diags --daemon
+EnvironmentFile=/etc/default/attn_config                                        
+ExecStart=/usr/bin/openpower-hw-diags --daemon $CONFIG
 Restart=on-failure
 
 [Install]
