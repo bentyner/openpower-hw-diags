@@ -73,6 +73,23 @@ endif
 pthread = declare_dependency(link_args : '-pthread')
 lrt = declare_dependency(link_args : '-lrt')
 
+# needed for util library (http)
+#boost_foo = [
+#  '-DBOOST_ALL_NO_LIB',
+#  '-DBOOST_ALLOW_DEPRECATED_HEADERS',
+#  '-DBOOST_ASIO_DISABLE_THREADS',
+#  '-DBOOST_ASIO_NO_DEPRECATED',
+#  '-DBOOST_ASIO_SEPARATE_COMPILATION',
+#  '-DBOOST_BEAST_SEPARATE_COMPILATION',
+#  '-DBOOST_BEAST_USE_STD_STRING_VIEW',
+#  '-DBOOST_EXCEPTION_DISABLE',
+#  '-DBOOST_URL_NO_SOURCE_LOCATION',
+#  '-DJSON_NOEXCEPTION',
+#  '-DOPENSSL_NO_FILENAMES',
+#]
+boost_dep = dependency('boost', version : '>=1.79.0', required : false, include_type: 'system')
+openssl_dep = dependency('openssl', required : false, include_type : 'system', static : false)
+
 # JSON parser
 if cmplr.has_header('nlohmann/json.hpp')
     nlohmann_json_dep = declare_dependency()
@@ -121,7 +138,7 @@ no_listener_mode = get_option('nlmode')
 if not no_listener_mode.disabled()
   executable('openpower-hw-diags',
               sources : [ 'main_nl.cpp', 'cli.cpp', buildinfo, plugins_src ],
-              dependencies : [ libhei_dep ],
+              dependencies : [ libhei_dep, boost_dep, openssl_dep ],
               link_with : hwdiags_libs,
               install : true)
 else
